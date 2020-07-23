@@ -1,0 +1,33 @@
+{
+ "name": "upcheck",
+ "version": "0.0.0",
+ "description": "CI job to test service availability.",
+ "author": "PayFunc",
+ "license": "MIT",
+ "repository": {
+  "type": "git",
+  "url": "git+https://github.com/payfunc/upcheck"
+ },
+ "bugs": {
+  "url": "https://github.com/payfunc/upcheck/issues"
+ },
+ "homepage": "https://github.com/payfunc/upcheck#readme",
+ "private": false,
+ "bin": {
+  "payfunc": "dist/run.js"
+ },
+ "main": "dist/index.js",
+ "typings": "dist/index.d.ts",
+ "git": {
+  "tagName": "v${version}"
+ },
+ "github": {
+  "release": true
+ },
+ "scripts": {
+  "test": "payfunc --server env test"
+ },
+ "dependencies": {
+  "@payfunc/cli": "0.0.9"
+ }
+}

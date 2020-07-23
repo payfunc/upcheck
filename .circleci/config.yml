@@ -1,0 +1,89 @@
+version: 2.1
+default: &default
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:10.15
+commands:
+  prepare:
+    description: "Prepare working directory"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  test:
+    description: "test"
+    steps:
+      - prepare
+      - run:
+          name: Run tests
+          command: npm run test
+jobs:
+  build:
+    <<: *default
+    steps:
+      - test
+  check:
+    <<: *default
+    steps:
+      - test
+      - run:
+          name: Send SMS
+          command: |
+            curl -X POST https://api.46elks.com/a1/sms \
+              -u ${ELKS_API_USER}:${ELKS_API_PASSWORD} \
+              -d from=UpCheck \
+              -d to=${ELKS_TO} \
+              -d message="UpCheck failed. ${CIRCLE_BUILD_URL}"
+          when: on_fail
+  daily:
+    <<: *default
+    steps:
+      - test
+      - run:
+          name: Send Success SMS
+          command: |
+            curl -X POST https://api.46elks.com/a1/sms \
+              -u ${ELKS_API_USER}:${ELKS_API_PASSWORD} \
+              -d from=PayFuncCI \
+              -d to=${ELKS_TO} \
+              -d message="UpCheck daily test succeeded. ${CIRCLE_BUILD_URL}"
+      - run:
+          name: Send Fail SMS
+          command: |
+            curl -X POST https://api.46elks.com/a1/sms \
+              -u ${ELKS_API_USER}:${ELKS_API_PASSWORD} \
+              -d from=PayFuncCI \
+              -d to=${ELKS_TO} \
+              -d message="UpCheck daily test failed. ${CIRCLE_BUILD_URL}"
+          when: on_fail
+workflows:
+  version: 2.1
+  check:
+    triggers:
+      - schedule:
+          cron: "7/10 * * * *"
+          filters:
+            branches:
+              only: master
+    jobs:
+      - check
+  daily:
+    triggers:
+      - schedule:
+          cron: "37 13 * * *"
+          filters:
+            branches:
+              only: master
+    jobs:
+      - daily
+  build:
+    jobs:
+      - check
