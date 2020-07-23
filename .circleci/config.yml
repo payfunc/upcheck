@@ -69,7 +69,37 @@ workflows:
   check:
     triggers:
       - schedule:
-          cron: "*/10 * * * *"
+          cron: "07 * * * *"
+          filters:
+            branches:
+              only: master
+      - schedule:
+          cron: "17 * * * *"
+          filters:
+            branches:
+              only: master
+      - schedule:
+          cron: "27 * * * *"
+          filters:
+            branches:
+              only: master
+      - schedule:
+          cron: "37 00-12 * * *"
+          filters:
+            branches:
+              only: master
+      - schedule:
+          cron: "37 14-23 * * *"
+          filters:
+            branches:
+              only: master
+      - schedule:
+          cron: "47 * * * *"
+          filters:
+            branches:
+              only: master
+      - schedule:
+          cron: "57 * * * *"
           filters:
             branches:
               only: master
