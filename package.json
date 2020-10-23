@@ -28,6 +28,6 @@
   "test": "payfunc --server env test"
  },
  "dependencies": {
-  "@payfunc/cli": "0.0.17"
+  "@payfunc/cli": "0.0.18"
  }
 }
