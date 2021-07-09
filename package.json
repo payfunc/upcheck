@@ -25,7 +25,7 @@
   "release": true
  },
  "scripts": {
-  "test": "payfunc --server env test"
+  "test": "payfunc --server workerIntergiro test && payfunc --server env test && payfunc --server workerClearhaus test"
  },
  "dependencies": {
   "@payfunc/cli": "0.0.29"
